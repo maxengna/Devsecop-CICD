@@ -85,7 +85,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Container') {
+        stage('Deploy to Container') { 
             steps {
                 sh 'docker run -d -p 8081:80 maxdev888/netflix:latest'
             }
