@@ -66,7 +66,7 @@ pipeline {
         stage('TRIVY Image Scan') {
             steps {
                 sh 'trivy image maxdev888/netflix:latest > trivyimage.txt'
-            }
+            } 
         }
         stage('Update Deployment YAML') {
             steps {
