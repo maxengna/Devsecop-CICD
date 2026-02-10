@@ -48,6 +48,7 @@ pipeline {
                 sh 'trivy fs . > trivyfs.txt'
             }
         }
+        // Fix Latest
         stage('Docker Build & Push') {
             steps {
                 script {
