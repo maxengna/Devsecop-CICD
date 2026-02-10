@@ -49,7 +49,7 @@ pipeline {
                 sh 'trivy fs . > trivyfs.txt'
             }
         }
-        // test cicd pipeline
+        // test cicd pipeline1
         stage('Docker Build & Push') {
             steps {
                 script {
