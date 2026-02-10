@@ -50,23 +50,27 @@ pipeline {
         }
         stage('Docker Build & Push') {
             steps {
-                withCredentials([string(credentialsId: 'tmdb-api-key', variable: 'TMDB_V3_API_KEY')]) {
+                script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
-                        sh '''
-                docker build \
-                  --build-arg TMDB_V3_API_KEY=$TMDB_V3_API_KEY \
-                  -t netflix .
-                docker tag netflix maxdev888/netflix:latest
-                docker push maxdev888/netflix:latest
-                '''
+                        withCredentials([string(credentialsId: 'tmdb-api-key', variable: 'TMDB_V3_API_KEY')]) {
+                            sh '''
+                    docker build \
+                      --build-arg TMDB_V3_API_KEY=$TMDB_V3_API_KEY \
+                      -t netflix .
+
+                    docker tag netflix maxdev888/netflix:latest
+                    docker push maxdev888/netflix:latest
+                    '''
+                        }
                     }
                 }
             }
         }
+
         stage('TRIVY Image Scan') {
             steps {
                 sh 'trivy image maxdev888/netflix:latest > trivyimage.txt'
-            } 
+            }
         }
         stage('Update Deployment YAML') {
             steps {
@@ -85,7 +89,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Container') { 
+        stage('Deploy to Container') {
             steps {
                 sh 'docker run -d -p 8081:80 maxdev888/netflix:latest'
             }
