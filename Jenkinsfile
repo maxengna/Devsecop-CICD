@@ -89,7 +89,7 @@ pipeline {
                         git status
                         git add -A
                         git commit -m "Update image version to ${BUILD_NUMBER}"
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git dev
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git Deploy
                         '''
                     }
                 }
