@@ -86,6 +86,7 @@ pipeline {
                         git config user.name "maxengna"
                         git rev-parse --show-toplevel
                         cd $(git rev-parse --show-toplevel)
+                        git status
                         git add -A
                         git commit -m "Update image version to ${BUILD_NUMBER}"
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git dev
