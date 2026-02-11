@@ -74,7 +74,7 @@ pipeline {
                 sh 'trivy image maxdev888/netflix:latest > trivyimage.txt'
             }
         }
-        // fixed cicd pipeline4
+        // fixed cicd pipeline5
         stage('Update Deployment YAML') {
             steps {
                 script {
