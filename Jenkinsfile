@@ -83,6 +83,8 @@ pipeline {
                         sed -i 's#image: maxdev888/netflix:.*#image: maxdev888/netflix:'${BUILD_NUMBER}'#' deployment.yml
                         git config user.email "phanupong.w2019@gmail.com"
                         git config user.name "maxengna"
+                        git rev-parse --show-toplevel
+                        cd $(git rev-parse --show-toplevel)
                         git add .
                         git commit -m "Update image version to ${BUILD_NUMBER}"
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git dev
