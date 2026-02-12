@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    //test pipeline5
+    //test pipeline6
     tools {
         jdk 'jdk17'
         nodejs 'node16'
