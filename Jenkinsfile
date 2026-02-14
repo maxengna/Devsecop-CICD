@@ -86,14 +86,14 @@ pipeline {
                         git rev-parse --show-toplevel
                         cd $(git rev-parse --show-toplevel)
 
-                        git fetch origin deploy
+                        git fetch origin
                         git checkout deploy || git checkout -b deploy
                         git pull origin deploy --rebase || true
 
                         git status
                         git add -A
                         git commit -m "Update image version to ${BUILD_NUMBER}"
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git HEAD:deploy
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git deploy
                         '''
                     }
                 }
