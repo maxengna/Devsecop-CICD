@@ -79,20 +79,21 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh '''
-                        cd Kubernetes
-                        sed -i 's#image: maxdev888/netflix:.*#image: maxdev888/netflix:'${BUILD_NUMBER}'#' deployment.yml
                         git config user.email "phanupong.w2019@gmail.com"
                         git config user.name "maxengna"
                         git rev-parse --show-toplevel
                         cd $(git rev-parse --show-toplevel)
 
-                        git fetch origin
                         git checkout deploy || git checkout -b deploy
+                        git fetch origin
                         git pull origin deploy --rebase || true
+
+                        cd Kubernetes
+                        sed -i 's#image: maxdev888/netflix:.*#image: maxdev888/netflix:'${BUILD_NUMBER}'#' deployment.yml
 
                         git status
                         git add -A
-                        git commit -m "Update image version to ${BUILD_NUMBER}"
+                        git commit -m "Update image version to ${BUILD_NUMBER}" || true
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/maxengna/Devsecop-CICD.git deploy
                         '''
                     }
@@ -102,7 +103,7 @@ pipeline {
         stage('Deploy to Container') {
             steps {
                 sh '''
-                docker ps -a --filter "name=netflix" | xargs -r docker rm -f
+                docker ps -a --filter "name=netflix" -q | xargs -r docker rm -f
                 docker run -d -p 8081:80 maxdev888/netflix:${BUILD_NUMBER}
 
                 '''
