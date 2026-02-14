@@ -60,8 +60,8 @@ pipeline {
                       --build-arg TMDB_V3_API_KEY=$TMDB_V3_API_KEY \
                       -t netflix .
 
-                    docker tag netflix maxdev888/netflix:latest
-                    docker push maxdev888/netflix:latest
+                    docker tag netflix maxdev888/netflix:${BUILD_NUMBER}
+                    docker push maxdev888/netflix:${BUILD_NUMBER}
                     '''
                         }
                     }
@@ -71,20 +71,7 @@ pipeline {
 
         stage('TRIVY Image Scan') {
             steps {
-                sh 'trivy image maxdev888/netflix:latest > trivyimage.txt'
-            }
-        }
-        post {
-            always {
-                emailext(
-                attachLog: true,
-                subject: "${currentBuild.result}",
-                body: """Project: ${env.JOB_NAME}<br/>
-                         Build Number: ${env.BUILD_NUMBER}<br/>
-                         URL: ${env.BUILD_URL}<br/>""",
-                to: 'phanupong.w2019@gmail.com',
-                attachmentsPattern: 'trivyfs.txt, trivyimage.txt'
-            )
+                sh 'trivy image maxdev888/netflix:${BUILD_NUMBER} > trivyimage.txt'
             }
         }
         stage('Update Deployment YAML') {
@@ -109,8 +96,25 @@ pipeline {
         }
         stage('Deploy to Container') {
             steps {
-                sh 'docker run -d -p 8081:80 maxdev888/netflix:latest'
+                sh '''
+                docker ps -a --filter "name=netflix" | xargs -r docker rm -f
+                docker run -d -p 8081:80 maxdev888/netflix:${BUILD_NUMBER}
+
+                '''
             }
+        }
+    }
+    post {
+        always {
+            emailext(
+                attachLog: true,
+                subject: "${currentBuild.result}",
+                body: """Project: ${env.JOB_NAME}<br/>
+                         Build Number: ${env.BUILD_NUMBER}<br/>
+                         URL: ${env.BUILD_URL}<br/>""",
+                to: 'phanupong.w2019@gmail.com',
+                attachmentsPattern: 'trivyfs.txt, trivyimage.txt'
+            )
         }
     }
 }
