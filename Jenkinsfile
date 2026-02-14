@@ -85,6 +85,11 @@ pipeline {
                         git config user.name "maxengna"
                         git rev-parse --show-toplevel
                         cd $(git rev-parse --show-toplevel)
+
+                        git fetch origin deploy
+                        git checkout deploy || git checkout -b deploy
+                        git pull origin deploy --rebase || true
+
                         git status
                         git add -A
                         git commit -m "Update image version to ${BUILD_NUMBER}"
