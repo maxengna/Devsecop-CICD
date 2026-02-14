@@ -74,7 +74,19 @@ pipeline {
                 sh 'trivy image maxdev888/netflix:latest > trivyimage.txt'
             }
         }
-        // fixed cicd pipeline5
+        post {
+            always {
+                emailext(
+                attachLog: true,
+                subject: "${currentBuild.result}",
+                body: """Project: ${env.JOB_NAME}<br/>
+                         Build Number: ${env.BUILD_NUMBER}<br/>
+                         URL: ${env.BUILD_URL}<br/>""",
+                to: 'phanupong.w2019@gmail.com',
+                attachmentsPattern: 'trivyfs.txt, trivyimage.txt'
+            )
+            }
+        }
         stage('Update Deployment YAML') {
             steps {
                 script {
